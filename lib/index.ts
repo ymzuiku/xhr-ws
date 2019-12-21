@@ -4,6 +4,8 @@ interface IOptions {
 }
 
 interface IBodyData {
+  url?: any;
+  headers?: any;
   db?: string;
   col?: string;
   block?: { [name: string]: any };
@@ -20,6 +22,8 @@ interface IBodyData {
 function createHttpClient(url: string, options?: IOptions) {
   return function(data: IBodyData) {
     return new Promise(function(cb) {
+      const subUrl = data.url;
+      const subHeaders = data.headers;
       const { headers, timeout = 4000 } = options || {};
       const xhr = new XMLHttpRequest();
       function loaded(res: any) {
@@ -34,13 +38,22 @@ function createHttpClient(url: string, options?: IOptions) {
       xhr.addEventListener('timeour', function() {
         cb({ error: `time out: ${timeout}ms`, url });
       });
-      xhr.open('POST', url, true);
+      if (subUrl) {
+        xhr.open('POST', url + subUrl, true);
+      } else {
+        xhr.open('POST', url, true);
+      }
       xhr.timeout = timeout;
       xhr.responseType = 'json';
       xhr.setRequestHeader('content-type', 'application/json');
       if (headers) {
         Object.keys(headers).forEach(function(k) {
           xhr.setRequestHeader(k, headers[k]);
+        });
+      }
+      if (subHeaders) {
+        Object.keys(subHeaders).forEach(function(k) {
+          xhr.setRequestHeader(k, subHeaders[k]);
         });
       }
       xhr.send(JSON.stringify(data));

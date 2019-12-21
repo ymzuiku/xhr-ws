@@ -3,6 +3,8 @@ interface IOptions {
     timeout: number;
 }
 interface IBodyData {
+    url?: any;
+    headers?: any;
     db?: string;
     col?: string;
     block?: {
