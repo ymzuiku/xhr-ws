@@ -1,0 +1,23 @@
+{
+  "name": "xhr-ws",
+  "version": "0.1.2",
+  "main": "umd/xhr-ws.js",
+  "types": "umd/index.d.ts",
+  "private": false,
+  "license": "MIT",
+  "scripts": {
+    "lib": "node rollup.js",
+    "start": "node rollup.js -w & nodemon example/index.js"
+  },
+  "repository": "ymzuiku/xhr-ws",
+  "author": "pillar <ymblender@gmail.com>",
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.2",
+    "rollup": "^1.27.12",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "rollup-plugin-uglify": "^6.0.4",
+    "typescript": "^3.7.3"
+  }
+}
