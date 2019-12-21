@@ -1,6 +1,6 @@
 {
   "name": "xhr-ws",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "main": "umd/xhr-ws.js",
   "types": "umd/index.d.ts",
   "private": false,
