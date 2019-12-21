@@ -20,8 +20,8 @@ interface IBodyData {
 function createHttpClient(url: string, options?: IOptions) {
   return function(data: IBodyData) {
     return new Promise(function(cb) {
-      var { headers, timeout = 4000 } = options || {};
-      var xhr = new XMLHttpRequest();
+      const { headers, timeout = 4000 } = options || {};
+      const xhr = new XMLHttpRequest();
       function loaded(res: any) {
         if (res && res.target) {
           cb(res.target.response);
@@ -49,17 +49,22 @@ function createHttpClient(url: string, options?: IOptions) {
 }
 
 function createWsClient(url: string) {
-  var wsUrl = url;
-  var ws: WebSocket;
-  var callbacks = {};
-  var wsNameNubmer = 0;
+  let ws: WebSocket;
+  let wsNum = 0;
+
+  const callbacks = {};
 
   function connectWs() {
-    ws = new WebSocket(wsUrl);
+    if (ws) {
+      ws.close();
+    }
+
+    ws = new WebSocket(url);
     ws.onmessage = function(msg) {
-      var res = JSON.parse(msg.data);
-      if (res.wsName && callbacks[res.wsName]) {
-        callbacks[res.wsName](res);
+      const res = JSON.parse(msg.data);
+
+      if (res._ws && callbacks[res._ws]) {
+        callbacks[res._ws](res);
       }
     };
   }
@@ -67,34 +72,37 @@ function createWsClient(url: string) {
 
   return (data: IBodyData) => {
     return new Promise(cb => {
-      wsNameNubmer += 1;
-      if (wsNameNubmer > 60000) {
-        wsNameNubmer = 0;
+      wsNum += 1;
+      if (wsNum > 60000) {
+        wsNum = 0;
       }
-      var wsName = wsNameNubmer;
-      data.wsName = wsName;
+      const _ws = wsNum;
+      data._ws = _ws;
 
-      var msg = JSON.stringify(data);
-      var timer;
+      const msg = JSON.stringify(data);
+      let timer;
+
       function safeSend() {
         if (timer) {
           clearTimeout(timer);
           timer = null;
         }
-        if (ws.readyState !== 1) {
+        if (ws.readyState > 1) {
           connectWs();
           timer = setTimeout(() => {
             safeSend();
-          }, 2000);
+          }, 3000);
         } else {
           ws.send(msg);
         }
       }
       safeSend();
 
-      callbacks[wsName] = function(res: any) {
+      callbacks[_ws] = function(res: any) {
+        const theWs = res.theWs;
+        res._ws = undefined;
         cb(res);
-        delete callbacks[wsName];
+        delete callbacks[theWs];
       };
     });
   };
