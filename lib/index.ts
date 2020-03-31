@@ -6,16 +6,7 @@ interface IOptions {
 interface IBodyData {
   url?: any;
   headers?: any;
-  db?: string;
-  col?: string;
-  block?: { [name: string]: any };
-  method: string;
-  args?: any[];
-  // 用来标记需要转化为 sha256 的args路径
-  argsSha256?: string[];
-  // 用来标记需要转化为 ObjectId 的args路径
-  argsObjectId?: string[];
-  remove?: string[];
+  body?: any;
   [other: string]: any;
 }
 

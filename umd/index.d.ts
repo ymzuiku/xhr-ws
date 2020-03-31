@@ -5,16 +5,7 @@ interface IOptions {
 interface IBodyData {
     url?: any;
     headers?: any;
-    db?: string;
-    col?: string;
-    block?: {
-        [name: string]: any;
-    };
-    method: string;
-    args?: any[];
-    argsSha256?: string[];
-    argsObjectId?: string[];
-    remove?: string[];
+    body?: any;
     [other: string]: any;
 }
 declare function createHttpClient(url: string, options?: IOptions): (data: IBodyData) => Promise<unknown>;
